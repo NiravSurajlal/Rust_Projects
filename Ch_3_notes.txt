@@ -761,3 +761,39 @@ ITERATING over STRINGS
 	_ string_val.bytes() _ method returns each u8 byte
 	remember, unicode values may be made up of more than 1 byte
 	grapheme clusters have crates but not in the standard library
+	
+HASH MAPS to STORE KEYS with associated values
+	_ HashMap<K, V> _ is a common collection that stores a 
+		mapping of KEYS of a specific type to _ K _
+		values of a specific type _ V _ 
+	the above is done by a hashing function which determines how the keys and values are placed in memory
+	lookup up data not using index like in vectors, rather with a key 
+	eg: a team game; each team name is a key, with the associated scores being the values
+
+CREATING a HASH MAP
+	_ use _  from a library -> _ use std::collections::HashMap; _
+	create with _ new _ & add elements with _ insert _
+	store data on the heap
+	_ scores.insert(KEYS, VALUES); _ 
+	homogenous keys and values
+	can also create by using teh _ collect.() _ method on tuple vector
+		where each tuple consists of its a  key and its value
+		_ collect() _ method gather data into various collection types 
+		type allocation _  HashMap<_, _> _ required can _ collect() _ into many types
+
+OWNERSHIP of HASH MAPS
+	dependend on types in
+		_ i32 _ implements _ copy _ trait -> vals copied into hash map
+		_ String _ (or owned values), values will be moved and HM will be owner of those values 
+		-> strings cannot be used after the _ .insert() _
+	can move references into HM, but values at those refs must be valid for the duration of the HM
+
+ACCESSING VALUES in HASH MAP 
+	provide key to _ .get(key) _ method
+	var will have val associated with key 
+	value returned: _ Some(&value) _ because get returns an _ Option<&V> _ 
+		will return _ None _ if no value for key 
+	program must handle the OPTION 
+	can also iterate through key/value pairs in a LOOPS
+		_ for (key, value) in &HashMapName{ .. } _
+		
