@@ -718,13 +718,46 @@ STRING
 STRING CREATION
 	operations from _ Vec<T> _ 
 	created as follows: _ let mut s = String::new(); _
+	can load values into strings using _ .to_string() _ or _ String::from("...") _
+	type infers 
 
+UPDATING a STRING
+	append a string slice with PUSH -> _ var.push_str("to append"); _
+		_ push_str _ method takes a string slice because we might not want to take ownership of parameter
+		the var in _ var.push_str("to append"); _ can still be used
+	concatenate with _ + _ or _ format! _
+	using _ + _
+		signature of method called when using _ + _ requires var + ref
+		var becomes unusable but ref is still
+		generics vs concrete types
+		compiler can coerce &String into &str requires by the + signature
+		takes ownership of var appends copy of s2, returns owenership of s2
+	for more items to be concatented use _ format! _
+		works like println! with _ {} _ but does not print an outptu to the screen, rather stores a variable
+		is easier to read and does not take ownership
 
+INDEXING STRINGS
+	rust strings do not support indexing
+	uncertain what return type should be: byte val, char, grapheme cluster, string slice
+	string is a wrapper over a Vec<u8> 
+	some chars require more than 1 byte to represent
+		an index into a strings bytes may not correlate to a valid unicode scalar value
+	should take a constant time, but is not possible to guarantee if string indexing were a thing 
 
+BYTES, SCALAR VALUES, GRAPHEME CLUSTERS
+	3 ways of looking at strings
+	B = vector of u8 values (u8 numbers stored in an array representing the word)
+	S = char type which results in diacritics
+	G = closest thigns to letters
+	each program can choose what interpretaion to use
 
+SLICING STRINGS
+	do you really need indicies to make a string slice -> rust request that one be more specific
+	use _ [] _with a range to create a string slice containing particualr bytes
+		must be a rance _ [0..1] _ would make rust panic
 
-
-
-
-
-
+ITERATING over STRINGS
+	_ string_val.chars() _ method to perform operations on individual unicode scalar values
+	_ string_val.bytes() _ method returns each u8 byte
+	remember, unicode values may be made up of more than 1 byte
+	grapheme clusters have crates but not in the standard library
