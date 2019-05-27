@@ -1,0 +1,730 @@
+NAME in rust = identifier (vars, funcs, structs). Made up of non-empty ASCII string.
+	1st char = alpha/_ => alphanumeric or _ / greater than one char and alphanumeric
+
+COMMENT by //
+
+LITERAL is not a name but refers to the actual value (i.e the int/char data)
+
+RAW IDENTIFIER when needing to call something that has the same name as a keyword
+	starts with r#var  
+
+DECLARE VAR
+	let x = 5;
+
+IMMUTABLE variables cannot be changed once bound to a name
+
+MAKE MUTABLE
+	let mut x = 5;
+
+MACRO or macroinstruction specifies how input sequence should be mapped to output sequence
+
+CONSTANTS always immutable
+	must annotate type
+	any scope incl global
+	naming convention is uppercase with underscores
+
+SHADOWING lets variable's value change with reference to itself
+	can change var types of same name
+
+SHADOW
+	let spaces = "     ";
+	let spaces = spaces.len;
+	/***** string to int *****/
+
+STATICALLY TYPED => know types of all variables at compile time 
+	Always add the type annotation
+
+Data type subsets are SCALAR and COMPUND
+	Scalars represent a single value:  ints, floating points, booleans, chars
+	Multiple values into one types: tuples and arrays
+	
+INTS can be signed or unsigned, size declared or use isize/usize (32 on 32 bit and 64 on 64 bit)
+	Ranges from -2^(n-1) to 2^(n-1)-1
+	Can have type suffix's to indicate 32bit etc ...  57u8?
+	Can use _ as a visual seperator when declaring values => 1_000_000
+	Integer overflow will cause the program to crash/error/panic in debug
+		In release builds -> 2's complement wrapping ... 256 becomes 0 and 257, 1
+
+PRIMITIVE = smallest unit of processing available to a programmer on a given machine.
+
+FLOATING-POINT TYPES have 2 primitive types, numbers with decimals
+	f32 & f64, latter being default. Speed is about the same on modern systems but precision is greater. 
+		f32 has single precision, f64 double precision 
+		Binary32 = 32-bit base-2, 64-bit base-2 as double
+	
+NUMERIC OPERATIONS: +, -, *, /, % ... appendix B
+
+BOOLEAN has T or F and are 1 byte in size
+	let t = true;
+	let f: bool = false;
+
+CHAR literal specified by single quotes as opposed to strings ""
+	let c = 'z';
+	Unicode Scalar value => emoji, chin/jap/korean/zero-width chars
+	U+0000 to U+D7FF && U+E000 to U+10FFFF, inclusive
+	Char for humans and in Rust differ?
+	
+TUPLES group other number values with (possibly) diff types
+	Fixed length
+	
+	fn main(){
+		let tup: (i32, f64, u8) = (500, 6.4, 1);
+		let (x, y, z) = tup; 	//Pattern matching to destructure
+		let five_hundered = tup.0;	//access tuple element directly
+		let one = tup.2;
+	}
+
+ARRAY has every element of same type and are of fixed length
+	let a = [1, 2, 3, 4, 5];
+	let a: [i32; 5] = [1, 2, 3, 4, 5];	//type of each element in array and length
+
+	let first = a[0];	//accessing array elements
+	let second = a[1];
+	
+	Data allocated to stack not heap
+	Ensure fixed number of elements
+	Vectors allowed to change size (Ch 8)
+	Runtime error if trying to access array element that does not exist, eg. a[10]
+
+FUNCTIONS declared by fn
+	fn main() {	}
+	SNAKE CASE -> lower case & underscores seperate words
+	type annotation in functions 
+	contain expressions
+
+FUNCTION PARAMETERS are variables
+	part of fn signature
+	provide conctere values/arguments for parameters
+	can return vals to code that calls them
+		use -> to declare TYPE (no name) of return val
+	if end an expression/function with return val with semi-colon, will get an errror because semi-colon indicates statement, not expression
+
+STATEMENTS make up function body
+	instructions that perform action and do not return a value
+	
+	let x = 5; //does not return a value
+	let x = (let y = 6); //cannot compile 
+
+	other languages returns value of assignment, rust does not
+
+EXPRESSIONS evaluate to a resulting value
+	e.g. 5 + 6
+	Calling a function/macro is an expression
+	block used to create new var allocation - {} -  is expression
+		{ 
+			let x = 3;
+			x + 1
+		}
+	Above is a block that is an expression which evals to 4
+	Expressions do not include semi-colons
+		would become a statement and not return a value
+	if no ; at end = expression
+	can be if, else -> ;
+
+CONTROL FLOW to determine when to run some code
+
+IF/ELSE used to control flow
+	condidition of the IF statement must be a BOOL
+	rust does not try to  automatically convert to bool in IF
+	!= 0 
+	can use ELSE IF
+		only executes first TRUE if/else if condidition ... does not check others
+		use MATCH to reduce else if
+	if using an if/else in a SCOPE 
+		let x = if ... {}
+					else{}; //if and else must have same type
+		//Rust needs to know at compile time what val of a var is, so checks types
+		//compiler would be more complex, less gaurantees if had to keep track of multiple hypothetical types
+
+LOOPS for repetition
+	loop {
+		//break -- to break loop
+	}
+
+	can use conditional break, returned by broken loop 
+		let result = loop{
+			counter += 1; //define
+
+			if counter == 10 {
+				break counter *20;
+			}
+		};
+		assert_eq!(result, 20);
+
+WHILE implemented by loop, if, else and break statements
+
+FOR implemetable with while.
+	error prone, cause program panic 
+	slow because compiler adds runtime code to perform a conditional check on each element
+
+	for element in a.iter(){ //iter?
+		println!("Val is: {}", element);
+	}
+
+	use range to use FOR loop as WHILE loop
+		(1..4).rev() reverses
+		for i in (1..4){
+			//iterates through 1, 2, 3	
+		}
+
+/********************************** CHAPTER 4 **********************************/
+GARBAGE COLLECTOR reclaims memory occupied by objects that are no longer in use
+	constantly looks for memory no longer in use
+	
+OWNERSHIP safety guarantees without garbage collector
+	A set of rules are checked at compile time = manages memory allocation
+	Addresses HEAP issues
+		minimizing duplicate data
+		clean unused data = more space on H	
+	RULES
+		Every value has a var called OWNER
+		Only one OWNER at a time
+		When OWNER goes out of scope, value will be dropped
+	Variable that includes data from HEAP goes out of SCOPE, val cleaned by DROP unless data MOVED to be owned by another variable
+
+STACK & HEAP have affects on language behavior because it matters whether a value is on the S or H in a systems languages
+	Memory available to code during runtime
+	S stores values as it gets them and removes in opposite order (last in first out)
+		Pushing onto or popping from the stack
+		Fast because always adds or removes data from the top down
+		All data is a known fixed size on stack
+	H stores data whose size may not be known at compile time or whose data may change 
+		less organized then S
+		allocating on the H requires a request for a specific amount of space
+			OS finds large enough empty spot, marks as in use and returns a pointer
+	H is slower to work with
+		closer values result in a faster process, hence stack
+		Allocation on H can take time
+	When calling a function, values passed and local vars pushed onto stack
+		Once fn is over, popped off
+
+VARIABLE SCOPE is the range within a program that an item is valid for
+	eg. {					//not valid
+			//comes into scope below
+		let s = "hello";	//s is valid	
+		//use s 
+			//leaves scope below
+	}						//scope over, s is no longer valid
+
+STRING type	
+	All previous are used stored on stack, popped off when scope is over
+	STRING stored on heap
+	//*****All ownership discussed relates to other complex data types in std lib and created*****//
+	String literals are immutable
+	string literals vs " String " ... String can be mutated but literals cannot
+		latter stored on H 
+		create String from string literal using from function
+		{
+			let mut s = String::from("hello"); //:: is operator that allows us to namespace function
+			s.push_str(", world!"); //appends literal to string
+		}
+
+MEMORY & ALLOCATION & MOVE
+	string literals are efficient because contents known at compile time 
+		comes from its immutability 
+	String time requires mem in heap to support its mutability (size change)
+		memory must be requested at runtime from OS
+		memory should be returned to memory when done with String
+		done by grabage collector usually
+		in rust, memory is automatically returned once the variable is out of the scope
+			rust calls drop function automatically at the end of a curly bracket
+			similar to RAII in C++, Resource Acquisition Is Initialization
+	{
+		let s1 = String::from("hello");
+		let s2 = s1;
+		//s1 has ptr, len, capacity
+		//this is copied, not actual value in s1
+		//this means when drop fn used at end of fn, double free error would occur	
+	}
+	freeing memory twice can = memory corruption -> security vulnerabilities
+	this resolved by marking s1 as invalid -> leads to error if used
+		(Shallow not deep copy because not copying val. Not exactly this, because of invalidation = move)
+
+CLONE AND COPY 
+	method and trait resepctively 
+	let s2 = s1.clone(); //heap gets cloned as well
+		//expensive, because copying heap uses more resources
+	if stored on the stack faster to clone
+	COPY traiy allows older variable to still be in use after assignment
+		cannot be used if DROP
+	ints with known sizes at compile time stored on the stack, automatically cloned when needed
+	any groups with simple scalalr = copy
+		eg. all ints 
+			boolean bool
+			floats
+
+			tuples if they only containt copy types
+
+OWNERSHIP AND FUNCTIONS
+	similar to assigning val to var -> move or copy
+	eg ch_4_eg
+	These examples get complicated quickly -> references 
+
+REFERENCES AND BORROWING
+	'&' references a val without giving ownership
+		gives the pointer address 
+		deref with  '*'
+	this prevents val from being DROPPED
+	in fn paramters, use (s: &String), for instance ... &
+	this is borrowing, effectively 
+	cannot modify .. immutable references .. make 
+		but can only have one mutable reference per data per scope though 
+		prevent data races
+		use curly brackets to create new scopes 
+	cannot have mutable and immutable references at the same time either
+	can have dangling references which leads to LIFETIME PARAMETER error
+		for instance, if something is created within a scope then referenced out of it
+
+SLICES
+	does not have ownership
+	ref to part of a string
+		let s = String::from("hello world");
+		let slc = &s[0..5]; //upto but not including 5 .. use &s[0..=5]
+	contains pointer to xth byte of string with length y
+	can drop 0 or last index if going to maximums
+	prevents using lengths when variable cleared with 
+		var.clear();
+	STRING LITERALS are SLICES
+		let s = "Helo World";	//s type =&str -> slice pointing to specific point in binary => string immut
+	use two slices, one parsing and one returning for fn signature
+		more general and useful API
+
+OTHER SLICES
+	let a = [1, 2, 3, 4, 5];
+	let slice = &a[1..3] //slice has type &i[32]
+
+
+/********************************** CHAPTER 5 **********************************/
+STRUCTURE allows naming and packaging of multiple related values into a meaningful group
+	like an objects data attibutes
+	STRUCTS and ENUMS to advantage of Rust's compile time checking
+
+DEFINE & INSTANTIATE STRUCT
+	can consist of multiple different types in 1 struct like tuples
+	name each piece of data
+	inside curly brackets define names and associated types of data = fields
+		struct struct_name{
+			username: String,
+			email: String,
+			sign_in_count: u64,
+			active: bool,
+		}
+	create instance of struct to use it
+		specify value for each field
+		let var_name = struct_name{
+			//all fields by their defined names given values
+		}
+	specific val from struct accessed var_name.field , can also change if mutable, let mmut var_name = struct_name {}
+	can return via function:
+		fn user_fn(fieldName: fieldtype, ..) -> struct name{}
+	can use shorthand in fn, just fieldName in struct, not email: email for instance
+	STRUCTS can store refs
+		used owned String type, not &str string slice type, because we want instances to own its data
+			data is valid for as long as struct is valid
+		use lifetimes to store data owned by something else
+
+CREATE INSTANCES from other INSTANCES with STRUCT update syntax
+	new instance of struct with some old vals and some new vals
+	..previous_var_that_stored_struct
+		remaining vals = same as previous
+
+TUPLE STRUCTS
+	no names assoc with fields, just types
+	useful to give tuple a name, and make diff type to other tuples
+		struct Colour(i32, i32, i32);
+		struct Point(i32, i32, i32);
+		//and var declared by either are different types to one another, because each defined struct is its own type	
+	fn that takes one struct cannot take another instead, even if both are equal (3 i32's in this case)
+
+UNIT-LIKE STRUCTS have no FIELDS
+	similar to (), the unit type
+	useful to implement traits
+
+TRAITS
+	use with "derive" annotation
+	add useful behavior to custo types
+	listed in Appendix C
+	can create own (Ch 10) 
+
+METHODS 
+	declared with fn, have name, parameters & can return a val
+	diff is they are defined within context of STRUCT/ENUM/TRAIT
+	first parameter = _self_ , represents instance of the STRUCT the method is being called on
+		rust knows type of self is struct, parsed as "self" parameter because in _ impl struct_name _
+	define within context of struct:
+		impl struct_name{
+			//put fn here ..  first parameter = _&self_ 
+			//using fields -> self.field_name
+			//change instance that called method on, use _ &mut self _
+		}
+	use METHOD syntax to call in main
+		METHOD syntax goes after an instance -> 
+			struct_name.method_name(any_arguments)
+	can take ownership, borrow mut\immutabily
+	put all fns relating to struct in impl block thus providing all capabilities in one place
+	rust has autmatic referencing and dereferencing on METHODS
+		automatically add " & , &mut , * " so object matches signature of method
+		in C and C++ use " . " to call method on object directly and " -> " on pointer to object (dereferences)
+			{ obj -> somthing() }	is the same as	{ (*obj).something() }
+		methods have a clear reciever -> type self => rust can determine if 
+			reading { &self }
+			mutating { &mut self }
+			consuming { self }
+
+ASSOCIATED FUNCTIONS in IMPL blocks
+	can have functions that do not take self as a parameter
+		called associated functions .. are not methods because no instance of struct to work with
+		eg is the String::from associated function
+	used for constructors that will return new instance of struct
+	use _ :: _ to call .. for sintace struct_name::assoc_fn_nm(parameters);
+
+MULTIPLE IMPL blocks allowed per struct
+	can seperate methods and fns between them
+	useful for generic types and traits (Ch 10)?
+
+/********************************** CHAPTER 6 **********************************/
+ENUMERATIONS or ENUMS
+	define type by enumerating is possible values
+	encode meaning along with data
+
+DEFINING ENUM
+	ENUMS can only be one of the variants
+		for instance, IP addresses being either V4 or V6
+		however, both same type and should be handled the same
+	variants of ENUM
+		enum enum_name{
+			variant1,
+			variant2,
+		}
+	can break an ENUM into variants and create multiple stucts, however, this means they are not the same type
+
+
+ENUM VALUES 
+	instances of each variant created as follows
+			let something = enum_name::enum_vartiant;
+	variants of enums namespaced under identifier
+	all variants of the same tpye, namley, enum_name
+	can use any variant with type enum_name in any fn with an enum_name parameter
+		called: function_name(enum_name::variant);
+	allow more diverese usage of types as opposed to STRUCTS
+	can associate vals directly with variants
+		enum IpAddr{
+			V4(String),
+			V6(u8, u8, u8, u8)
+		}
+		let loopback = IpAddr::V4(String::from("::1"));
+		let home = IpAddr::V4(127, 0, 0, 1);
+	**standard library has definition of IpAddr ENUM
+	can define METHODS on ENUMS
+
+OPTION ENUM defined in standard library
+	a val could be something or nothing
+	to make a variable have the option of NULL use OPTION to make type of var Option<T>
+	this means when var is used, both cases must be explicitly handled
+	compiler can check whether all cases that should be handled are handled
+	encodeds the concept of a value being present or abscent, similar to a null
+	OPTION is an ENUM
+		enum Option<T> { 
+			//<T> is generic type parameter
+			//means variant Some can hold 1 piece of data of any type
+			Some(T),
+			None,
+		}
+	if we use NONE, need to tell type of SOME => 
+		let absent_number: Option<i32> = None;
+	cannont declare a type for T and use the type, eg:
+		let x: i8 = 5;
+		let y: Option<i8> = Some(5);
+
+		let sum = x + y; //erros, cannont add i8 and Option<i8> types
+	can only have no value if using OPTION, therefore compiler ensures that the case is handled
+		can only use if converted to type T
+		catches NULL error of using value thinking there is something there or vice versa 
+	need to hanlde each variant, use MATCH espression
+		use some code if T val present
+		use some other code if NULL present
+
+MATCH control flow operator
+	compare value against series of PATTERNS (discussed in CH18)
+		execute code depending on which pattern matches, if expression then returns it (most likely)
+	power because expressive patterns and confirmation that all cases are handled given by compiler
+	does not need to return BOOLEAN like IF statement
+	in each arm, _ => _ seperates pattern and code
+	used to extract val out of ENUM variants
+	can declare variable
+		match_name::Varaint_from_Enum(VARIABLE) => {}
+		//must be declared as_ state(VARIABLE)
+		//access enum in enum 
+	must be exhaustive, i.e. all cases must be handled or there will be a bug
+		can use the '_' symbol as a placeholder
+			_ => (),
+	maybe only care about one case -> use _ if let _
+
+MATCH with Option<T>
+	Some(i) in MATCH, _ i _ binds with val contained in _ Some _
+
+IF LET
+	use IF and LET to handle MATCH when only looking at one pattern
+	_ => () _ is a lot of boiler plate code
+	simply use 
+		if let pattern = expression{
+        	println!("Three");
+    	}
+	same like MATCH, where expression is given and the pattern is an arm
+	unfortunatley lose exhaustive checking of match function becaue it ignores other vals
+	to counter, can include an ELSE block
+
+/********************************** CHAPTER 7 **********************************/
+this chapter looks at PACKAGES, CRATES and MODULES as well as bringing names into scopes, defining scopes and exporting names to scopes
+
+features realated to SCOPE
+	PACKAGES let you build, test, share crates
+		-> a PACKAGE has a Cargo.toml -> describes how to build one or more crates.
+		-> only one CRATE per PACKAGE can be a library
+	CRATES = tree of modules that produce a library or executable
+		-> is a binary or library
+		-> CRATE root is a source file that is used to know how to build a root
+	MODULES and the USE key word allow control of the scope and the privacy of PATHS 
+	a PATH is a way of naming an item such as a struct, function or module
+
+PACKAGE is created when we type cargo new
+
+	have src directory containing a main.rs in same directory as PACKAGE's Cargo.toml file
+		-> Cargo knows this package contains a binary crate with the same name as the package
+		-> src/main.rs is CRATE root
+	if PACKAGE directory contains src/lib.rs, the package contains a library crate with the same name as the package
+		-> src/lib.rs is crate root
+	CRATE root files passed to rustc to build lib or binary
+	can contain 0 or 1 library CRATES and any number of binary CRATES
+		must have at least one 
+	if PACKAGE has both src/main.rs and src/lib.rs
+		-> two crates: lib and binary, both with the same name
+		-> multiple binary crates, place files in src/bin directory => each file = seperate binary CRATE
+
+CH7_02 	
+	organize code and control privacy of PATHS
+	PATHS = way to name items
+	_ use _ is a keyword to bring a path into scope
+	_ pub _ is a keyword to make items public
+	_ as _ renames items that have been brought into SCOPE
+	using external PACKAGES
+	nested PATHS to clean up large _ use _ lists
+	GLOB OPERATOR to bring everything in a module into scope
+	splitting MODULES into individual files
+ 
+ MODULES
+	organize code into groups
+	mod with fn inside, defined before main
+	can have nested (hierarchy) modules -> mod sound{mod instrument{fn guitar{ }}}
+	CRATE ROOTS contents form a MODULE named CRATE at the ROOT of the crate's MODULE TREE
+	Thus the MODULE TREE for ch7_01 looks like:
+		crate
+		|--sound
+		    |--instrument
+				|--woodwind
+			|--voice
+	instrument and voice are SIBLINGS of each other
+	like a directory tree of a filesystem on a computer
+		similiarly, place code inside whichever module will create the organization we would like
+	to refer to an item in a filesystem or MODULE tree, use PATH
+
+PATHS for reffering to an item in MODULE tree
+	to call a fn, need to know its path
+	fns, structs and other items have multiple PATHS
+	two types of PATHS
+		absolute PATH: CRATE root by using a CRATE name or literal _ crate _
+			use _ crate _ if in same crate as main
+		relative PATH: current module, uses _ self _  or _ super _ or identifier in current module
+			module defined at the same level of the module tree as the main function	
+	both PATH types are followed by 1  or more dentifiers, seperated by _ :: _ (:: acts like a \)
+
+PRIVACY boundary as well as organization are features of a MODULE
+	place ITEM in MODULE to make it PRIVATE
+		ITEMs (fns, methods, structs, enums, modules, constants) are PRIVATE by default
+	use _ pub _ keyword to make an item public
+	using MODULES
+		cannot use private code defined in modules that are CHILDREN of the current MODULE
+		can use any code defined in ANCESTOR modules or the current module
+		ITEMS without _ pub _ keyword are PRIVATE as you look down the MODULE tree, PUBLIC as you look up
+	think of directories, a parent requires permission to look into a child directory
+
+RELATIVE PATHS with _ super _
+	equivalent to starting a filesystem path with ..
+		PATH starts from PARENT MODULE, not current
+	useful when calling declared functions in the "main" module from some sub module
+		mod instrument{	fn clarinet(){	super::breathe_in();	}	}
+		fn breathe_in(){		}
+		//use super to go to parent module of instrument, because clarinet mod in instrument module
+		//is CRATE in this case	
+	SUPER relative paths may make it easier to update code , like change MODULE hierarchy
+	eg: if used absolute crate::breathe_in
+		wanted to move fn and instrument mod into new mod named sound
+		we would have to go crate::sound::breathe_in
+		if we used super::breathe_in, nothing would change besides the movement of the fn and module into the module sound
+
+ENUMS and STRUCTS can be made PUBLIC
+	pub makes struct public
+	each field in struct must be declared public
+	can access PUBLIC fields in main, not private ones -> error
+	all ENUM VARIANTS are PUBLIC, if ENUM is public; only _ pub _ before _ enum enum_name _
+
+USE keyword to bring PATHS into SCOPE
+	repetative and verbose path calling?
+	bring PATH into SCOPE once and call ITEMS as if they are LOCAL
+		use _ USE _ keyword
+	eg:	use crate::sound::instrument //whole path
+			fn main{
+				instrument::clarinet();
+				instrument::clarinet();
+				instrument::clarinet();
+				//as opposed to using whole path
+			}	
+	similar to creating a SYMBOLIC LINK in a filesystem
+		SYMBOLIC LINK is a filesystem object that points to another filesystem object (target)
+	line 1 makes _ instrument _ a valid name in the scope, as if the _ intrument _ module had been defined in the crate root
+	can use old or new PATHS 
+	for relative paths instead of absolute path, use 
+			self::sound::instrument
+	using USE can make updating the code easier if the code that calls the items moves to a different place in the module tree
+		but the code defining the item does not
+  this may happen if, for instance, the clarinet trio is moved into a function which is insde a module 
+
+IDIOMATIC use of USE
+	do not need to define parent in PATH, but considered good practice
+	USE allows shortening of path when used later (using function new below)
+		use std::collections::HashMap;
+		//in code ->
+		let mut map = HashMap::new();
+
+AS renames PATHS with the same name
+	for instance std::fmt::Result and std::io::Result would use _ Result::____(); _ in code
+	can have 
+		use std::io::Result as IoResult; //use IoResult::_____(); instead
+
+RE-EXPORTING with _ pub use _
+	name into scope with use, name is private in scope
+	use _ pub use _ to make public
+	can declare, for instance, in a mod the path but can use it in the main as well
+	like using one mod in another, can use _ use _ to make to make path accessible in mod and _ pub use _ to make it accessible anywhere
+
+EXTERNAL PACKAGES
+	add dependency to Cargo.toml under dependencies
+	this tells Cargo to download package from https://crates.io and make it available to the project
+	to bring into SCOPE of project use _ use _ and list the items to bring into scope
+		//bring Rng trait into scope and call a function
+		use rand::Rng;
+		fn main(){
+			let num = rand::thread_rng().gen_range(1, 101);
+		}
+	standard lib is also a crate, but do not need to add to dependencies, just top line of code
+
+large USE lists?
+	make them smalle if, for instance, traits from same crate such as standard
+		use std::cmp::Ordering;
+		use std::io;
+		//becomes
+		use std::{cmp::Ordering, io};
+	if use similar path
+		 lists?
+	make them smalle if, for instance, traits from same crate such as standard
+		use std::io;
+		use std::io::write;
+		//becomes
+		use std::{self, Write};
+	all pubic items defined in a path into scope
+		use the glob operator or _ * _
+			use std::collections::*;
+		be careful because of naming 
+
+MODULE seperation into DIFFERENT FILES
+	move MODULE to src/name_of_module.rs
+	type _ mod sound; _ to use in code
+	the semicolon tells Rust to load contents of module from another file 
+	can have just the module call in a module to another .rs file where the module code is
+
+/********************************** CHAPTER 8 **********************************/
+COMMON COLLECTIONS contain multiple values
+	unlike array/tuple, data collection points to are stored on HEAP, so size is not fixed
+	each type of collection has different capabilites and costs 
+	three types:
+		VECTOR allows storage of a variable number of values next to each other
+		STRING is a collection of characters -> _ String _ type
+		HASH MAP allows the association of a value with a specific key. 
+			particular implementation of the MAP data structure
+	there are more types of collections in the SL (standard Library)
+	This chapter will discuss how to make, update, and what makes each special 
+
+VECTORS can store lists of vals
+	allows 1< val to be stored in a single data structure
+	all values next to each other in memory 
+	only store vals of the same type
+		eg. lines of text or prices of items
+			// type annotated below because compiler cannot infer a type on an empty vec	
+		_ let v: Vec<type> = Vec::new(); _
+			//more realistically, often type is inferred by compiller from initial values
+			//use vec! macro to create vnew VECTOR to hold vals
+		_ let v = vec![vals seperated by a comma]; _
+
+VECTORs can be updated
+	make sure the vec is initialised as mutable
+	proper types only 
+	_ vector_name.push(); _
+
+DROPPING VECTOR ELEMENTS 	
+	indicate a scope -> { ... }
+	all contents gets DROPPED -> everthing held gets cleaned up
+
+VECTOR elements can be READ 
+	indexing syntax or _ get _ method
+	use _ &i32 _ pointers = &vec[index]
+	use: match vec_name.get{	Some... None... } // used for error handling/ if value unavailable
+	indecies start from 0
+	& and [] gives ref, get method with index passed as argument gives _ Option<&T> _
+	get method handles non existent entries by returning NONE -> Program will not crash
+	[] method will crash, becuase attempts to access nonexistant element
+	when using references, borrow checker enforces rules	
+		such as not having mutable and immutable references in same scope
+		this is because changing a vec, such as adding a new val, may require moving the value around in memory 
+			an immutable reference would be pointing to an unknown then
+
+ITERATING through Vectors
+	can with a simple _ for i in &vec_name{ } _
+	can change successive values by _ *i += 50 //for instance _
+		deref i with _ * _ to alter value at pointer i 
+
+MULTIPLE TYPES in vec
+	usually cannot, but use ENUMS
+	VARIANTS are defined under same EMUN type 
+	create ENUM with diff value types then VEC that holds ENUMS 
+	explicit about types in VEC
+	ENUM + _ match _ expression means every case is handled 
+	can use TRAIT OBJECT if all types to be in VEC are unknown ... discussed later
+	
+UTF-8 ENCODED TEXT & STRINGS
+	3 key aspects: R's propensity for exposing errors, STRs are complicated, UTF-8
+	Discuss as a collection because are a collection of bytes
+	Collection types have operations similar to those discussed below to work on STRINGS (eg. creating, updating, reading)
+	String different to other collections
+	INDEXING into a string is complicated by how people and computers interpret string data differently
+
+STRING
+	string type is the string SLICE _ str _	
+		usually used in borrowed form, _ &str _
+	string SLICES are references to UTF-8 encoded string data stored leswhere
+	string LITERALS are stored in programs binary -> string slices
+	both _ String _ and _ str _ string slices types are UTF-8 encoded
+	different options available in the library crates-> store different types of encoding or be represented in memory in a different way
+
+STRING CREATION
+	operations from _ Vec<T> _ 
+	created as follows: _ let mut s = String::new(); _
+
+
+
+
+
+
+
+
+
+

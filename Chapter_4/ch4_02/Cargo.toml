@@ -1,0 +1,7 @@
+[package]
+name = "ch_4_02_eg"
+version = "0.1.0"
+authors = ["Nirav"]
+edition = "2018"
+
+[dependencies]
