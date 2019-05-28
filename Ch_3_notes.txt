@@ -776,7 +776,7 @@ CREATING a HASH MAP
 	store data on the heap
 	_ scores.insert(KEYS, VALUES); _ 
 	homogenous keys and values
-	can also create by using teh _ collect.() _ method on tuple vector
+	can also create by using the _ collect.() _ method on tuple vector
 		where each tuple consists of its a  key and its value
 		_ collect() _ method gather data into various collection types 
 		type allocation _  HashMap<_, _> _ required can _ collect() _ into many types
@@ -796,4 +796,36 @@ ACCESSING VALUES in HASH MAP
 	program must handle the OPTION 
 	can also iterate through key/value pairs in a LOOPS
 		_ for (key, value) in &HashMapName{ .. } _
+
+UPDATING a HM
+	each KEY can only have one value at a time
+	how to handle the case where a key already has an associated value
+
+OVERWRITING HM values
+	use insert twice, with the smae key but different values
+		the second value will be associated with the key after the 2 lines of code have run
+
+INSERTING is KEY is EMPTY
+	use the HM API called _ entry _ 
+	return value of _ entry _ method is enum called Entry
+	use _ .or_insert(val) _ either returns mutable reference to value or creates value and supplies mut ref
+
+UPDATING HM BASED on OLD VALUE
+	for instance, counting how many times a word appears in a tex, iterating as it counts one
+	use entry and or_insert in a for loop that:
+		iterates through words in a sentence (string slice) 
+		will only update HM with new key when new word appears
+		the emthods returns  pointer to the value/ creates pointer to new value
+		store in a var, deref and increment to count
+
+HASHING FUNCTIONS
+	cryptographically strong hashing function, providing resistence to DoS (denial of service) atttacks
+	not fastest; trades better security for performance
+	can change hasher types (faster ones etc)
+	HASHER is type that implements _ BuildHasher _ trait
+
+CHAPTER 8 SUMMARY
+	vectors, strings, HMs provide functionality for storing, accessing and modifying data
+
+
 		
