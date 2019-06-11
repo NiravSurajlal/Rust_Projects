@@ -167,7 +167,7 @@ FOR implemetable with while.
 			//iterates through 1, 2, 3	
 		}
 
-/********************************** CHAPTER 4 **********************************/
+/******************************************************************** CHAPTER 4 ********************************************************************/
 GARBAGE COLLECTOR reclaims memory occupied by objects that are no longer in use
 	constantly looks for memory no longer in use
 	
@@ -294,7 +294,7 @@ OTHER SLICES
 	let slice = &a[1..3] //slice has type &i[32]
 
 
-/********************************** CHAPTER 5 **********************************/
+/******************************************************************** CHAPTER 5 ********************************************************************/
 STRUCTURE allows naming and packaging of multiple related values into a meaningful group
 	like an objects data attibutes
 	STRUCTS and ENUMS to advantage of Rust's compile time checking
@@ -382,7 +382,7 @@ MULTIPLE IMPL blocks allowed per struct
 	can seperate methods and fns between them
 	useful for generic types and traits (Ch 10)?
 
-/********************************** CHAPTER 6 **********************************/
+/******************************************************************** CHAPTER 6 ********************************************************************/
 ENUMERATIONS or ENUMS
 	define type by enumerating is possible values
 	encode meaning along with data
@@ -474,7 +474,7 @@ IF LET
 	unfortunatley lose exhaustive checking of match function becaue it ignores other vals
 	to counter, can include an ELSE block
 
-/********************************** CHAPTER 7 **********************************/
+/******************************************************************** CHAPTER 7 ********************************************************************/
 this chapter looks at PACKAGES, CRATES and MODULES as well as bringing names into scopes, defining scopes and exporting names to scopes
 
 features realated to SCOPE
@@ -642,7 +642,7 @@ MODULE seperation into DIFFERENT FILES
 	the semicolon tells Rust to load contents of module from another file 
 	can have just the module call in a module to another .rs file where the module code is
 
-/********************************** CHAPTER 8 **********************************/
+/******************************************************************** CHAPTER 8 ********************************************************************/
 COMMON COLLECTIONS contain multiple values
 	unlike array/tuple, data collection points to are stored on HEAP, so size is not fixed
 	each type of collection has different capabilites and costs 
@@ -828,4 +828,59 @@ CHAPTER 8 SUMMARY
 	vectors, strings, HMs provide functionality for storing, accessing and modifying data
 
 
-		
+/******************************************************************** CHAPTER 9 ********************************************************************/
+Rust often requires the writer to aknowledge an error may occur and handle that error before compilation
+2 error categories: RECOVERABLE and UNRECOVERABLE 
+	RECOV errors can be reported to user and retry operation, such as a file not found error
+	UNRECOV errors are symptoms of bugs, like trying to access the nth+1 location in an array, which does not exist
+most langauges do not differentiate errors, handle both with exceptions
+Rust does not have exceptions, only:
+	for RECOV: type _ Result<T, E> _ 	
+	for UNRECOV: _ panic! _ macro which stops excecution 
+chapter 9 will discuss the above methods and discuss when to use each
+
+UNRECOVERABLE errors with _ panic! _
+	something bad happens in code and programmer cannot do anything about -> rust uses _ painc! _ macro
+	program prints failure -> UNWINDS -> cleans stack -> quits
+	UNWINDING = rust walks back up stack and cleans data for each function 
+		alternative is to ABORT, UNWINDING can be costly (time etc)
+		memory cleaned by OS
+		need to make resulting binary as small as possible -> switch panic to abort by 
+			_ panic = 'abort' _ in appropriate _ [profile] _ sections in the Cargo.toml file 
+		during release, if you want to abort on panic add 
+			[profile.release]
+			panic = 'abort'
+	src/main.rs:2:5 indicates line 2, character 5 where panic occured
+		might be different if in code that main calls -> filename and line, char
+		use backtrace to figure out where our code calls and has teh issue
+
+BUFFER OVERERAD
+	when you try to access a index in a vec that does not exist
+		v[99] from a vec v = [X, Y, Z] deos not exist
+		some languages gives value at that memory address (v[99]) even though that memory address does not belong to that vector
+	this is BF OVERLOAD 
+
+BACKTRACE in _ panic! _
+	the error may occur in a file that we did not write
+		eg. accessing an array element not in the array -> panic will indicate an error in /rustc/.../src/libcore/slice/mod.rs:2686:10
+		which is implementation of SLICE in rust source code-> which is the code that gets run when is used _ [] _
+	the command line will indicate that 'RUST BACKTRACE=1' can be used (!= 0)
+		in command line: _ RUST_BACKTRACE=1 cargo run _
+	debug symbols must be enabled to get info  -> default enabled when not using _ --release _ with _ cargo run _ or _ cargo build _
+	_ panic::main _ shows line where the error occured in code
+
+_ RESULT _ to handle RECOVERABLE errors
+	often errors can be responded to because the reason for the error can be easily interepreted and responded to
+	the Result enum has 2 variants, Ok & Err:
+		enum Result<T, E> { 
+    		Ok(T),
+    		Err(E),
+		} 
+		T, E are generic type paramters, T = type of val returned and E type of the error
+	can use the result type and hot it is defined in the standard library to handle errors
+	for instance _ File::open _ returns a RESULT type 
+		std library API documentation or ask compiler to know what it returns
+		if give a var a type annotation not returned, compiler will tell us of a type mismatch
+		_ let f: u32 = File::open("hello.txt"); _
+			// tells us that returns Result type/ enum
+	
