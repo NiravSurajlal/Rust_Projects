@@ -885,8 +885,46 @@ _ RESULT _ to handle RECOVERABLE errors
 			// tells us that returns Result type/ enum
 			in this case, the Result enum indicates whether the operation succeeded or failed
 			value of f will be instance of _ ok _ or _ err _ if succeed or failed resepctively
-	depedning on what file::open returns (previous line), different actions should be taken
+	depending on what file::open returns (previous line), different actions should be taken
 		can use match to handle _ Result _
-		
+
+MATCHING DIFFERENT ERRORS
+	we may want different failure reasons to have different panics 
+	for instance with the above
+		if the program failed because the file does not exist, create the file and return new handle
+		any other error should be handled as stated previously
+		we should add an INNER MATCH expression 
+		LOOK AT METHODS CALLED AND WHAT THEY RETURN AND THE METHODS ASSOCIATED
+			can possbily call those to use in different match expressions 
+	there are methods (CHAPTER 13) that will clean up unruly amounts of match expressions for error handling
+
+PANIC on error SHORTCUTS: _ unwrap _ and _ expect _
+	_ unwrap _ method returns value inside the ok/error variants
+	use:	let f = File::open("hello.txt").unwrap();
+			// use .expect("Panic message") to dictate what the panic message should be
+
+PROPOGATING ERRORS
+	writing code in a fxn, but error handling needs to happen -> do not need to handle it in the function
+		return error to the CALLING CODE to that it will decide what to do
+	propogate upwards with _ return (insert) error values _ (the following can ONLY be used with FUNCTIONS that RETURN the _ Result _ type)
+	or use _ ? _: 	let mut f = File::open("hello.txt")?;
+    			   	let mut s = String::new();
+    				f.read_to_string(&mut s)?;
+	the _ ? _ method is usefule because it implements the _ from _ function which:
+		converts error types from one to another
+		useful when returning a specific error type, when the code in the function may return different error types
+	can further reduce function length by chaining methods:
+		// function will return early at _ ? _ points or return the string s
+		    let mut s = String::new();
+			File::open("hello.txt")?.read_to_string(&mut s)?;
+		    Ok(s)	 				
+		// or use the rust function
+			use std::io;
+			use std::fs;
+			fn read_username_from_file() -> Result<String, io::Error> {
+				fs::read_to_string("hello.txt")		}
+			
+    
+
 
 	
