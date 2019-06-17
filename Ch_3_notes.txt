@@ -879,8 +879,14 @@ _ RESULT _ to handle RECOVERABLE errors
 		T, E are generic type paramters, T = type of val returned and E type of the error
 	can use the result type and hot it is defined in the standard library to handle errors
 	for instance _ File::open _ returns a RESULT type 
-		std library API documentation or ask compiler to know what it returns
-		if give a var a type annotation not returned, compiler will tell us of a type mismatch
+		std library API documentation or ask compiler to know what it returns, done by the following:
+		if give a var a type annotation and it is not the one to be returned, compiler will tell us of a type mismatch and what the var is
 		_ let f: u32 = File::open("hello.txt"); _
 			// tells us that returns Result type/ enum
+			in this case, the Result enum indicates whether the operation succeeded or failed
+			value of f will be instance of _ ok _ or _ err _ if succeed or failed resepctively
+	depedning on what file::open returns (previous line), different actions should be taken
+		can use match to handle _ Result _
+		
+
 	
