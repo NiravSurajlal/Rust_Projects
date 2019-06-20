@@ -924,7 +924,32 @@ PROPOGATING ERRORS
 			fn read_username_from_file() -> Result<String, io::Error> {
 				fs::read_to_string("hello.txt")		}
 			
-    
+PANIC! or RESULT ??
+	panic! for any error situation-> crashes code which implies UNRECOVERABLE
+	calling result allows the calling code to attempt to RECOVER or to that en _ Err _ value is nevessary, i.e. UNRECOVERABLE
+	Result is a good default
 
+calling PANIC! for certain situations
+	Examples, prototype code, tests
+	1) to make examples clear -> call .unwrap() for instance
+	2) in prototyping, make handling errors easy when uncertain yet how to handle them
+	3) during testing, is a method fails, the whole test should -> use PANIC
+
+CUSTOM TYPES for VALIDATION
+	in the guessing game, can use i32 to make all inputs positive with an arror for values outside range
+	impractical if have to do multiple times in a program -> mau impact performance
+	alternativaly, can:
+		make a TYPE
+		put VALIDATIONS in a FUNCTION
+		to CREATE and INSTANCE of the TYPE 
+		instead of REPEATING VALIDATIONS  
+
+    
+INSTANCES are basically instances of a class, struct, enum etc that stores the data
+	for example, and instance of a car struct would store its make, model, year, price after the struct has been called 
+	when referring to types, and instance of a defined type can be created in a smiliar manner to the struct example
 
 	
+/******************************************************************** CHAPTER 10 ********************************************************************/	
+
+
