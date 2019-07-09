@@ -23,7 +23,7 @@ CONSTANTS always immutable
 	any scope incl global
 	naming convention is uppercase with underscores
 
-SHADOWING lets variable's value change with reference to itself
+SHADOWING lets variable's value change with reference to itsel f
 	can change var types of same name
 
 SHADOW
