@@ -951,5 +951,17 @@ INSTANCES are basically instances of a class, struct, enum etc that stores the d
 
 	
 /******************************************************************** CHAPTER 10 ********************************************************************/	
+GENERICS stand in for other types. They can be used in functions similar to how a a variable would.
+FUNCTIONS can take GENERICS as PARAMETERS.
+TRAITS define a BEHAVIOR in a GENERIC way
+LIFETIMES are a type of generic which inform the compiler how references relate to one another.
+LIFETIMES allows us to BORROW values while allowing the compiler to check that the the references are valid
+
+REMOVING DUPLICATION by EXTRACTING a function 
+	there may be exact code that is used twice in a program
+	instead, identify the code and replace it with a function call
+		the function will take the required arguments, often same type variable
+		with generics, can have different types?
+		such as largest vals in i32 list and char list
 
 
