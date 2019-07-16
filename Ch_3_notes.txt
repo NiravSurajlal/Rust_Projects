@@ -968,5 +968,32 @@ REMOVING DUPLICATION by EXTRACTING a function
 		such as largest vals in i32 list and char list
 
 GENERIC DATA TYPES 
-
-
+	use generics for items like func signatures, structs
+		thereafter use the concrete data types in the items
+		signatures define inputs and outputs of a function
+	two identical functions acting on a CHAR or INT vector can be reduced to one by using vecctors
+	usually parameter names are short, like 'T'
+		CAMELCASE - inner word starts with capital letter
+	GENERIC PARAMETER must be declared in func SIGNATURE
+	in some cases, when applying operations or funcs, they CANNOT ACT on some types - will learn how to specify GENERIC TYPES
+	
+IN STRUCT DEFINITIONS
+	can define generics as a struct
+	the input generic will have any type with the NUMBER OF GENERICS equivalent to the NUMBER OF TYPES
+	it behaves similar to:
+		the generic defines the TYPE OF EACH FIELD, thus if two fields are meant to be the same and they are not, the code will not compile
+		
+IN ENUM DEFINITIONS
+	looking at the _ Option<T> _ ENUM, the _ Some(T) _ variant is generic while the _ None _ variant is not
+	with regards to the RESULT ENUM, the _ Ok(T) _ variant will return the original while the other, an error message of a chosen type
+		useful when an operation may succeed or return some error code
+		
+IN METHOD DEFINITIONS
+	METHODS acting on STRUCTS or ENUMS can also be defined with generics
+	
+	
+	
+		
+		
+	
+	
