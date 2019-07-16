@@ -951,6 +951,9 @@ INSTANCES are basically instances of a class, struct, enum etc that stores the d
 
 	
 /******************************************************************** CHAPTER 10 ********************************************************************/	
+GENERICS are ABSTRACT stand-ins for concrete types which handle the duplication of concepts
+Allows functions to take different types and perform operations on them
+
 GENERICS stand in for other types. They can be used in functions similar to how a a variable would.
 FUNCTIONS can take GENERICS as PARAMETERS.
 TRAITS define a BEHAVIOR in a GENERIC way
@@ -963,5 +966,7 @@ REMOVING DUPLICATION by EXTRACTING a function
 		the function will take the required arguments, often same type variable
 		with generics, can have different types?
 		such as largest vals in i32 list and char list
+
+GENERIC DATA TYPES 
 
 
