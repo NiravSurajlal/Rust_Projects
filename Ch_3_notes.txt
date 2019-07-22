@@ -990,6 +990,10 @@ IN ENUM DEFINITIONS
 		
 IN METHOD DEFINITIONS
 	METHODS acting on STRUCTS or ENUMS can also be defined with generics
+	methods have same name as struct or whatever to be acted on
+	they define all "ready made" actions on those structs... 
+	the _ <T> _ after impl indicates the number of generics involved
+	_ &self _ indicates acting on itself, can thereafter use _ self.type _ 
 	
 	
 	
