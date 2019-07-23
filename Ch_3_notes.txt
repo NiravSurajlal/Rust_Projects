@@ -994,7 +994,7 @@ IN METHOD DEFINITIONS
 	they define all "ready made" actions on those structs... 
 	the _ <T> _ after impl indicates the number of generics involved
 	_ &self _ indicates acting on itself, can thereafter use _ self.type _ 
-	
+	methods for SPECIFIC TYPES will be UNDEFINED for others if the method does not use GENERICS
 	
 	
 		
