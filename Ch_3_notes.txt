@@ -995,6 +995,17 @@ IN METHOD DEFINITIONS
 	the _ <T> _ after impl indicates the number of generics involved
 	_ &self _ indicates acting on itself, can thereafter use _ self.type _ 
 	methods for SPECIFIC TYPES will be UNDEFINED for others if the method does not use GENERICS
+	can "MIXUP" types with methods-> take one from diff structs
+	some generic paramaters are DECLARED WITH IMPL, others with the METHOD
+	
+PERFORMANCE of code with GENERICS
+	GENERIC vs CONCRETE TYPES requires no extra RUNTIME cost
+	achieved by MONOMORPHIZATION of the code using generics at COMPILE TIME
+	MONOMORPHIZATION is the process of turning GENERIC code into SPECIFIC code
+		by generating code for the CONCRETE TYPES that the code IS CALLED WITH
+		code generated only for TYPES USED IN PROGRAM 
+		for instance, generic Option<T> can be replaced with Option_i32 and Option_f64, after MONOMORPHIZATION
+	this removes extra RUNTIME COST and makes RUST EFFICIENT at RUNTIME
 	
 	
 		
