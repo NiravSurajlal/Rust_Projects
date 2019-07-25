@@ -41,10 +41,25 @@ struct Point<T> {
     y: T,
 }
 
+struct Point_two<T, U> {
+    // will they have the same val?
+    x: T,
+    y: U,
+}
+
 impl<T> Point<T> {
     // method acting on struct Point
     fn x(&self) -> &T{
         &self.x
+    }
+}
+
+impl<T, U> Point_two<T, U>{
+    fn mixup<V,W>(self, other: Point_two<V, W>) -> Point_two<T,W>{
+        Point_two{
+            x: self.x,
+            y: other.y,
+        }
     }
 }
 
@@ -64,4 +79,10 @@ fn main() {
     let float = Point{x: 1.0, y: 4.0};
 
     println!("integger.x = {}", integger.x());
+
+    let p1 = Point_two{x: 5, y: 10.4};
+    let p2 = Point_two{x: "hello", y: 'c'};
+    // calls mixup method on p1 with argument p2
+    let p3 = p1.mixup(p2);
+    println!("p3.x = {}, p3.y = {}", p3.x, p3.y);
 }
